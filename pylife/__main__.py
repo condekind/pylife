@@ -1,6 +1,7 @@
 import fileinput
 import logging
 import sys
+import time
 from copy import deepcopy
 from enum import IntEnum
 from functools import lru_cache
@@ -120,6 +121,7 @@ class Game:
 
 def start(n: int = sys.maxsize, delay: float | int = 0.02):
     game: Game
+    start_time = time.time()
 
     debug(sys.argv)
 
@@ -138,9 +140,16 @@ def start(n: int = sys.maxsize, delay: float | int = 0.02):
             sleep(delay)
             game.step()
     except KeyboardInterrupt:
-        print(tmap.cache_info())
+        info(
+            f"\nRunning time: {time.time() - start_time} seconds\n"
+            f"{tmap.cache_info()}"
+        )
+        return
 
-    info(tmap.cache_info())
+    # ...
+    debug(
+        f"\nRunning time: {time.time() - start_time} seconds\n" f"{tmap.cache_info()}"
+    )
 
 
 if __name__ == "__main__":
