@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "pylife"
+version = "0.1.1"
+description = "An implementation of Conway's Game of Life in Python"
+authors = ["Bruno Conde Kind <condekind@users.noreply.github.com>"]
+license = "Apache-2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.6.7"
+mypy = "^1.11.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

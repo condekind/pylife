@@ -29,7 +29,6 @@ class Cell(IntEnum):
             case Cell.Live:
                 return CHAR_ALIVE
 
-
     def __repr__(
         self,
     ):
@@ -37,7 +36,6 @@ class Cell(IntEnum):
 
 
 # Type Aliases
-Cell.Values = {member.value for member in Cell}
 Board = list[list[Cell]]
 Neighbourhood = tuple[
     tuple[Cell, Cell, Cell],
@@ -69,27 +67,23 @@ class Game:
     def parse_board(fpath: str | Path) -> Board:
         ret: Board = []
         ret += [
-            [Cell(int(c)) for c in ln.strip() if int(c) in Cell.Values]
+            [Cell(int(c)) for c in ln.strip() if int(c) in set(Cell)]
             for line in fileinput.input(fpath)
             if len(ln := line.strip()) > 0
         ]
 
         return ret
 
-
     def __init__(
         self,
     ):
-
         self._args = argparse.Namespace()
-        cli = argparse.ArgumentParser(
-            prog="python pylife", description="Options"
-        )
+        cli = argparse.ArgumentParser(prog="python pylife", description="Options")
         cli.add_argument("-i", "--input", type=str, required=True)
-        cli.add_argument("-d", "--delay", type=float, default=0.2)
-        cli.add_argument("-n", "--num-steps", type=int, default=sys.maxsize)
-        cli.add_argument("--alive", type=str, default="🐩")
-        cli.add_argument("--dead", type=str, default="🐈")
+        cli.add_argument("-d", "--delay", type=float, default=0.2, help="Delay in seconds between iterations")
+        cli.add_argument("-n", "--num-steps", type=int, default=sys.maxsize, help="Number of iterations to run")
+        cli.add_argument("--alive", type=str, default="🐩", help="Character to use for living cells")
+        cli.add_argument("--dead", type=str, default="🐈", help="Character to use for dead cells")
 
         cli.parse_args(namespace=self._args)
 
@@ -107,7 +101,6 @@ class Game:
         CHAR_ALIVE = self._args.alive
         CHAR_DEAD = self._args.dead
 
-
     def __str__(
         self,
     ) -> str:
@@ -117,7 +110,6 @@ class Game:
                 ret += str(c)
             ret += "\n"
         return str(ret)
-
 
     def step(self, n: int = 1):
         for _ in range(n):

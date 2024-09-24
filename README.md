@@ -32,11 +32,8 @@ CacheInfo(hits=123047, misses=349, maxsize=1024, currsize=349)
 
 Some of the listed items might be overkill for the time being, but this repo might also serve as a future python template
 
-- [ ] mypy / lsp / lints / fix types (!!!)
+- [x] mypy / lsp / lints / fix types (!!!)
 - [x] argparse
-- [ ] pyproject.toml
-- [ ] Automated tests (GitHub Actions)
-- [ ] Docker
-- [ ] Better UI
-- [ ] Custom rules
-- [ ] etc.
+- [x] pyproject.toml
+- [x] CI
+- [ ] Tests
