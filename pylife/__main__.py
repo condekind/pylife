@@ -2,13 +2,18 @@ import fileinput
 import logging
 import sys
 import time
+import argparse
 from copy import deepcopy
 from enum import IntEnum
 from functools import lru_cache
 from logging import debug, info
 from pathlib import Path
 from time import sleep
-from typing import Any, Final, TypeAlias
+from typing import Final
+
+
+CHAR_ALIVE: str
+CHAR_DEAD: str
 
 
 class Cell(IntEnum):
@@ -20,9 +25,10 @@ class Cell(IntEnum):
     ):
         match self:
             case Cell.Dead:
-                return "░"
+                return CHAR_DEAD
             case Cell.Live:
-                return "█"
+                return CHAR_ALIVE
+
 
     def __repr__(
         self,
@@ -30,9 +36,14 @@ class Cell(IntEnum):
         return self.__str__()
 
 
+# Type Aliases
 Cell.Values = {member.value for member in Cell}
-Board: TypeAlias = list[list[Cell]]
-Neighbourhood: TypeAlias = tuple[tuple[Cell, 3], 3]
+Board = list[list[Cell]]
+Neighbourhood = tuple[
+    tuple[Cell, Cell, Cell],
+    tuple[Cell, Cell, Cell],
+    tuple[Cell, Cell, Cell],
+]
 
 
 @lru_cache(maxsize=1024)
@@ -43,11 +54,11 @@ def tmap(cells: Neighbourhood) -> Cell:
     _r0, _r1, _r2, *_ = cells
     nbrs = sum(_r0) + sum(_r1) + sum(_r2)
     match cells:
-        case [r0, r1, r2] if r1[1] == Cell.Live and (nbrs == 3 or nbrs == 4):
+        case [_, r1, _] if r1[1] == Cell.Live and (nbrs == 3 or nbrs == 4):
             return Cell.Live
-        case [r0, r1, r2] if r1[1] == Cell.Dead and (nbrs == 3):
+        case [_, r1, _] if r1[1] == Cell.Dead and (nbrs == 3):
             return Cell.Live
-        case [[_, _, _], r1, [_, _, _]]:
+        case [[_, _, _], _, [_, _, _]]:
             return Cell.Dead
         case err:
             raise ValueError(f"Invalid state: {err}")
@@ -65,32 +76,48 @@ class Game:
 
         return ret
 
+
     def __init__(
         self,
-        **kwargs: dict[str, Any],
     ):
-        match kwargs:
-            case {"board": b, **rest} if b is not None:
-                self.board = Game.parse_board(b)
-                self.rows = len(b)
-                self.cols = len(b[0]) if b[0] else 0
-            case {"rows": r, "cols": c, **rest}:
-                self.rows = rows
-                self.cols = cols
-                self.board = [[Cell.Dead for c in range(cols)] for r in range(rows)]
-            case rest:
-                raise ValueError(f"Invalid Game __init__() args: {kwargs.items()}")
+
+        self._args = argparse.Namespace()
+        cli = argparse.ArgumentParser(
+            prog="python pylife", description="Options"
+        )
+        cli.add_argument("-i", "--input", type=str, required=True)
+        cli.add_argument("-d", "--delay", type=float, default=0.2)
+        cli.add_argument("-n", "--num-steps", type=int, default=sys.maxsize)
+        cli.add_argument("--alive", type=str, default="🐩")
+        cli.add_argument("--dead", type=str, default="🐈")
+
+        cli.parse_args(namespace=self._args)
+
+        # [-d]
+        self.delay: float = self._args.delay
+
+        # [-n]
+        self.steps: int = self._args.num_steps
+
+        # [-i]
+        self.board = Game.parse_board(self._args.input)
         self.buffer = deepcopy(self.board)
+
+        global CHAR_ALIVE, CHAR_DEAD
+        CHAR_ALIVE = self._args.alive
+        CHAR_DEAD = self._args.dead
+
 
     def __str__(
         self,
-    ):
+    ) -> str:
         ret = ""
         for r in self.board:
             for c in r:
                 ret += str(c)
             ret += "\n"
         return str(ret)
+
 
     def step(self, n: int = 1):
         for _ in range(n):
@@ -119,25 +146,19 @@ class Game:
             self.board, self.buffer = self.buffer, self.board
 
 
-def start(n: int = sys.maxsize, delay: float | int = 0.02):
+def start(n: int = sys.maxsize, delay: float | int = 0.05):
     game: Game
     start_time = time.time()
 
     debug(sys.argv)
 
-    match len(sys.argv):
-        case 3:
-            game = Game(sys.argv[1], sys.argv[2])
-        case 2:
-            game = Game(board=sys.argv[1])
-        case _:
-            game = Game()
+    game = Game()
 
     try:
-        for _ in range(n):
+        for _ in range(game.steps):
             print("\033[H\033[2J", end="")
             print(game, flush=True)
-            sleep(delay)
+            sleep(game.delay)
             game.step()
     except KeyboardInterrupt:
         info(

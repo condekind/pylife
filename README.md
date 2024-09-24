@@ -14,7 +14,7 @@ git clone git@github.com:condekind/pylife.git && cd pylife
 # source .venv/bin/activate
 
 # Run using provided input
-python pylife input/input03.txt
+python pylife -i input/input03.txt
 ```
 
 Example of a [Gosper glider gun](https://en.wikipedia.org/wiki/Gun_(cellular_automaton)):
@@ -32,11 +32,11 @@ CacheInfo(hits=123047, misses=349, maxsize=1024, currsize=349)
 
 Some of the listed items might be overkill for the time being, but this repo might also serve as a future python template
 
-- mypy / lsp / lints / fix types (!!!)
-- argparse
-- Poetry/pyproject.toml/requirements.txt
-- Automated tests (GitHub Actions)
-- Docker
-- Better UI
-- Custom rules (also includes custom grids, e.g., hexagons)
-- etc.
+- [ ] mypy / lsp / lints / fix types (!!!)
+- [x] argparse
+- [ ] pyproject.toml
+- [ ] Automated tests (GitHub Actions)
+- [ ] Docker
+- [ ] Better UI
+- [ ] Custom rules
+- [ ] etc.
