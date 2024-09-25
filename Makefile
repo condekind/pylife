@@ -5,4 +5,4 @@ install:
 
 check:
 	. .venv/bin/activate && ruff check
-	. .venv/bin/activate && mypy pylife --check-untyped-defs
+	. .venv/bin/activate && mypy python-game-of-life --check-untyped-defs
