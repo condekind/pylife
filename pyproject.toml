@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "python-game-of-life"
+name = "game-of-life-cli"
 version = "0.1.1"
 description = "An implementation of Conway's Game of Life in Python"
 authors = ["Bruno Conde Kind <condekind@users.noreply.github.com>"]
