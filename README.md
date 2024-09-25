@@ -14,7 +14,7 @@ git clone git@github.com:condekind/pylife.git && cd pylife
 # source .venv/bin/activate
 
 # Run using provided input
-python pylife -i input/input03.txt
+python python-game-of-life -i input/input03.txt
 ```
 
 Example of a [Gosper glider gun](https://en.wikipedia.org/wiki/Gun_(cellular_automaton)):

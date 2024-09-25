@@ -78,7 +78,7 @@ class Game:
         self,
     ):
         self._args = argparse.Namespace()
-        cli = argparse.ArgumentParser(prog="python pylife", description="Options")
+        cli = argparse.ArgumentParser(prog="python python-game-of-life", description="Options")
         cli.add_argument("-i", "--input", type=str, required=True)
         cli.add_argument("-d", "--delay", type=float, default=0.2, help="Delay in seconds between iterations")
         cli.add_argument("-n", "--num-steps", type=int, default=sys.maxsize, help="Number of iterations to run")
